@@ -218,4 +218,143 @@ public class Email {
 			}
 
 	}
+	public void setName(String email,String oname,String Nname) {
+		textField1.setText(email);
+		textField2.setText("Regarding the profile changes");
+		jtextAreaContent.setText("Hi "+oname+", your name was changed to "+Nname+" as your preference..");
+	    
+		try {
+			Properties properties=new Properties();
+			properties.put("mail.smtp.auth","true");
+			properties.put("mail.smtp.starttls.enable","true");
+			properties.put("mail.smtp.host","smtp.gmail.com");
+			properties.put("mail.smtp.port","587");
+			properties.put("mail.smtp.ssl.protocols","TLSv1.2");
+			
+			String username="railresv492@gmail.com";
+			String password="xrvomffgkmzsgtcl";
+			Session session=Session.getDefaultInstance(properties,new Authenticator() {
+
+				@Override
+				protected PasswordAuthentication getPasswordAuthentication() {
+					return new PasswordAuthentication(username,password);
+				}
+			});
+			Message message=new MimeMessage(session);
+			message.setSubject(textField2.getText());
+			message.setContent(jtextAreaContent.getText(),"text/plain");
+			message.setFrom(new InternetAddress(textField1.getText()));
+			message.setRecipients(RecipientType.TO,InternetAddress.parse(textField1.getText(), false));
+			message.setSentDate(new Date());
+		     
+			Transport.send(message);
+			}catch(Exception t) {
+				System.out.println(t);
+			}
+
+	}
+	public void setEmail(String s1,String s2,String name) {
+		textField1.setText(s2);
+		textField2.setText("Regarding the profile changes");
+		jtextAreaContent.setText("Hi "+name+", your email was changed to "+s1+" as your preference..");
+	    
+		try {
+			Properties properties=new Properties();
+			properties.put("mail.smtp.auth","true");
+			properties.put("mail.smtp.starttls.enable","true");
+			properties.put("mail.smtp.host","smtp.gmail.com");
+			properties.put("mail.smtp.port","587");
+			properties.put("mail.smtp.ssl.protocols","TLSv1.2");
+			
+			String username="railresv492@gmail.com";
+			String password="xrvomffgkmzsgtcl";
+			Session session=Session.getDefaultInstance(properties,new Authenticator() {
+
+				@Override
+				protected PasswordAuthentication getPasswordAuthentication() {
+					return new PasswordAuthentication(username,password);
+				}
+			});
+			Message message=new MimeMessage(session);
+			message.setSubject(textField2.getText());
+			message.setContent(jtextAreaContent.getText(),"text/plain");
+			message.setFrom(new InternetAddress(textField1.getText()));
+			message.setRecipients(RecipientType.TO,InternetAddress.parse(textField1.getText(), false));
+			message.setSentDate(new Date());
+		     
+			Transport.send(message);
+			}catch(Exception t) {
+				System.out.println(t);
+			}
+	}
+	public void setMobile(String name,String email,String mobile) {
+		textField1.setText(email);
+		textField2.setText("Regarding the profile changes");
+		jtextAreaContent.setText("Hi "+name+", your mobile number was changed to "+mobile+" as your preference..");
+	    
+		try {
+			Properties properties=new Properties();
+			properties.put("mail.smtp.auth","true");
+			properties.put("mail.smtp.starttls.enable","true");
+			properties.put("mail.smtp.host","smtp.gmail.com");
+			properties.put("mail.smtp.port","587");
+			properties.put("mail.smtp.ssl.protocols","TLSv1.2");
+			
+			String username="railresv492@gmail.com";
+			String password="xrvomffgkmzsgtcl";
+			Session session=Session.getDefaultInstance(properties,new Authenticator() {
+
+				@Override
+				protected PasswordAuthentication getPasswordAuthentication() {
+					return new PasswordAuthentication(username,password);
+				}
+			});
+			Message message=new MimeMessage(session);
+			message.setSubject(textField2.getText());
+			message.setContent(jtextAreaContent.getText(),"text/plain");
+			message.setFrom(new InternetAddress(textField1.getText()));
+			message.setRecipients(RecipientType.TO,InternetAddress.parse(textField1.getText(), false));
+			message.setSentDate(new Date());
+		     
+			Transport.send(message);
+			}catch(Exception t) {
+				System.out.println(t);
+			}
+
+	}
+	public void setPassword(String email,String name) {
+		textField1.setText(email);
+		textField2.setText("Regarding the profile changes");
+		jtextAreaContent.setText("Hi "+name+", your password was changed as your preference..");
+	    
+		try {
+			Properties properties=new Properties();
+			properties.put("mail.smtp.auth","true");
+			properties.put("mail.smtp.starttls.enable","true");
+			properties.put("mail.smtp.host","smtp.gmail.com");
+			properties.put("mail.smtp.port","587");
+			properties.put("mail.smtp.ssl.protocols","TLSv1.2");
+			
+			String username="railresv492@gmail.com";
+			String password="xrvomffgkmzsgtcl";
+			Session session=Session.getDefaultInstance(properties,new Authenticator() {
+
+				@Override
+				protected PasswordAuthentication getPasswordAuthentication() {
+					return new PasswordAuthentication(username,password);
+				}
+			});
+			Message message=new MimeMessage(session);
+			message.setSubject(textField2.getText());
+			message.setContent(jtextAreaContent.getText(),"text/plain");
+			message.setFrom(new InternetAddress(textField1.getText()));
+			message.setRecipients(RecipientType.TO,InternetAddress.parse(textField1.getText(), false));
+			message.setSentDate(new Date());
+		     
+			Transport.send(message);
+			}catch(Exception t) {
+				System.out.println(t);
+			}
+
+	}
 }

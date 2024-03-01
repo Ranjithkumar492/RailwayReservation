@@ -2,12 +2,19 @@ import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.table.DefaultTableModel;
+
 import java.awt.Font;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.awt.event.ActionEvent;
 import javax.swing.ImageIcon;
 import java.awt.Color;
+import javax.swing.JCheckBox;
 
 public class Home {
 
@@ -63,6 +70,39 @@ public class Home {
 				Train t=new Train();
 				t.TrainFrame.setVisible(true);
 				HomeFrame.dispose();
+				try {
+					Connection con=DbConnection.getConnection();
+				String q3="select Tno,name,Fr,T,DTime,RTime from Train";
+    		    PreparedStatement pst=con.prepareStatement(q3);
+    			ResultSet rs=pst.executeQuery();
+    			 
+    			 ResultSetMetaData rsmd=rs.getMetaData();
+    		     DefaultTableModel model=(DefaultTableModel) Train.table.getModel();
+    		    	
+    		    	int cols=rsmd.getColumnCount();
+    		    	String[] colName=new String[cols];
+    		    	for(int i=0;i<cols;i++)
+    		    		colName[i]=rsmd.getColumnName(i+1);
+    		    
+    		    	model.setColumnIdentifiers(colName);
+    		    	
+    		    	String TrainNo,name,From,To,DTime,RTime;
+    		    	while(rs.next()) {
+    		    		TrainNo=rs.getString(1);
+    		    	     name=rs.getString(2);
+    		    		From=rs.getString(3);
+    		    		To=rs.getString(4);
+    		    		DTime=rs.getString(5);
+    		    		RTime=rs.getString(6);
+ 
+    		    		String[] row= {TrainNo,name,From,To,DTime,RTime};
+    		    		
+    		    		model.addRow(row);
+    		    	}
+				}catch(Exception exp) {
+					System.out.print(exp);
+				}
+				
 			}
 		});
 		btn1.setFont(new Font("Calibri", Font.BOLD, 15));
@@ -78,6 +118,38 @@ public class Home {
 				CancelTicket c=new CancelTicket();
 				c.CancelFrame.setVisible(true);
 				HomeFrame.dispose();
+				
+				String q="select id,Tno,name from Train";
+				try {
+				Connection con=DbConnection.getConnection();
+				PreparedStatement pst=con.prepareStatement(q);
+				ResultSet rs=pst.executeQuery();
+				
+				 ResultSetMetaData rsmd=rs.getMetaData();
+    		     DefaultTableModel model=(DefaultTableModel) CancelTicket.table.getModel();
+    		    	
+    		    	int cols=rsmd.getColumnCount();
+    		    	String[] colName=new String[cols];
+    		    	for(int i=0;i<cols;i++)
+    		    		colName[i]=rsmd.getColumnName(i+1);
+    		    
+    		    	model.setColumnIdentifiers(colName);
+    		    	
+    		    	String id,TrainNo,name;
+    		    	while(rs.next()) {
+    		    		id=rs.getString(1);
+    		    		TrainNo=rs.getString(2);
+    		    	     name=rs.getString(3);
+    		    		
+    		    		String[] row= {id,TrainNo,name};
+    		    		
+    		    		model.addRow(row);
+    		    	}
+
+				
+				}catch(Exception exp) {
+					System.out.println(exp);
+				}
 			}
 		});
 		btn2.setFont(new Font("Calibri", Font.BOLD, 15));
@@ -89,10 +161,45 @@ public class Home {
 		btn4.setBackground(Color.BLACK);
 		btn4.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				
 				//call the mybookings class
 				MyBookings m=new MyBookings();
 				m.MyBookingsFrame.setVisible(true);
 				HomeFrame.dispose();
+				
+				String q="select id,Tno,name from Train";
+				try {
+				Connection con=DbConnection.getConnection();
+				PreparedStatement pst=con.prepareStatement(q);
+				ResultSet rs=pst.executeQuery();
+				
+				 ResultSetMetaData rsmd=rs.getMetaData();
+    		     DefaultTableModel model=(DefaultTableModel) MyBookings.Btable.getModel();
+    		    	
+    		    	int cols=rsmd.getColumnCount();
+    		    	String[] colName=new String[cols];
+    		    	for(int i=0;i<cols;i++)
+    		    		colName[i]=rsmd.getColumnName(i+1);
+    		    
+    		    	model.setColumnIdentifiers(colName);
+    		    	
+    		    	String id,TrainNo,name;
+    		    	while(rs.next()) {
+    		    		id=rs.getString(1);
+    		    		TrainNo=rs.getString(2);
+    		    	     name=rs.getString(3);
+    		    		
+    		    		String[] row= {id,TrainNo,name};
+    		    		
+    		    		model.addRow(row);
+    		    	}
+
+				
+				}catch(Exception exp) {
+					System.out.println(exp);
+				}
+
+				
 			}
 		});
 		btn4.setFont(new Font("Calibri", Font.BOLD, 15));
@@ -113,9 +220,29 @@ public class Home {
 		btn7.setBounds(10, 391, 70, 23);
 		HomeFrame.getContentPane().add(btn7);
 		
-		JLabel ilabel = new JLabel("");
-		ilabel.setIcon(new ImageIcon("C:\\Users\\ELCOT\\Downloads\\Home.jpg"));
-		ilabel.setBounds(0, 0, 810, 425);
-		HomeFrame.getContentPane().add(ilabel);
+		JButton btn5 = new JButton("Profile");
+		btn5.setBackground(Color.BLACK);
+		btn5.setForeground(Color.WHITE);
+		btn5.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String email=Login.textField1.getText();
+				
+					myProfile m=new myProfile();
+					m.ProfileFrame.setVisible(true);
+					
+					HomeFrame.dispose();
+					
+					m.set(email);
+					
+			}
+		});
+		btn5.setFont(new Font("Calibri", Font.BOLD, 15));
+		btn5.setBounds(716, 11, 84, 23);
+		HomeFrame.getContentPane().add(btn5);
+		
+		JLabel lblNewLabel = new JLabel("");
+		lblNewLabel.setIcon(new ImageIcon("C:\\Users\\ELCOT\\Downloads\\Home.jpg"));
+		lblNewLabel.setBounds(0, 0, 810, 425);
+		HomeFrame.getContentPane().add(lblNewLabel);
 	}
 }

@@ -44,6 +44,8 @@ import javax.swing.JRadioButton;public class UserRegister {
 	private JPasswordField pass2;
 	JRadioButton r1;
 	JRadioButton r2;
+	private JTextField textField3;
+	private JTextField textField4;
 	/**
 	 * Launch the application.
 	 */
@@ -67,7 +69,7 @@ import javax.swing.JRadioButton;public class UserRegister {
 	public UserRegister() {
 		initialize();
 		try {
-			check();
+			//check();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -86,49 +88,49 @@ import javax.swing.JRadioButton;public class UserRegister {
 		RFrame.getContentPane().setLayout(null);
 		
 		JLabel label1 = new JLabel("USER REGISTRATION");
-		label1.setForeground(Color.BLACK);
+		label1.setForeground(Color.RED);
 		label1.setFont(new Font("Calibri", Font.BOLD, 25));
-		label1.setBounds(251, 78, 214, 25);
+		label1.setBounds(264, 21, 214, 25);
 		RFrame.getContentPane().add(label1);
 		
 		JLabel label2 = new JLabel("Name:");
 		label2.setForeground(Color.RED);
 		label2.setBackground(Color.BLACK);
 		label2.setFont(new Font("Calibri", Font.BOLD, 15));
-		label2.setBounds(238, 121, 47, 14);
+		label2.setBounds(237, 90, 47, 14);
 		RFrame.getContentPane().add(label2);
 		
 		JLabel label3 = new JLabel("Email Id:");
 		label3.setForeground(Color.RED);
 		label3.setFont(new Font("Calibri", Font.BOLD, 15));
-		label3.setBounds(223, 146, 66, 14);
+		label3.setBounds(223, 129, 66, 14);
 		RFrame.getContentPane().add(label3);
 		
 		JLabel label4 = new JLabel("Password:");
 		label4.setForeground(Color.RED);
 		label4.setFont(new Font("Calibri", Font.BOLD, 15));
-		label4.setBounds(219, 183, 66, 14);
+		label4.setBounds(210, 171, 66, 14);
 		RFrame.getContentPane().add(label4);
 		
 		JLabel label5 = new JLabel("Confirm Password:");
 		label5.setForeground(Color.RED);
 		label5.setFont(new Font("Calibri", Font.BOLD, 15));
-		label5.setBounds(166, 209, 123, 25);
+		label5.setBounds(160, 209, 123, 25);
 		RFrame.getContentPane().add(label5);
 		
 		textField2 = new JTextField();
 		textField2.setColumns(10);
-		textField2.setBounds(294, 147, 162, 20);
+		textField2.setBounds(295, 124, 162, 20);
 		RFrame.getContentPane().add(textField2);
 		
 		passwordField1=new JPasswordField();
-		passwordField1.setBounds(294, 178, 162, 20);
+		passwordField1.setBounds(295, 166, 162, 20);
 		RFrame.getContentPane().add(passwordField1);
 		 
 	
 		textField1 = new JTextField();
 		textField1.setColumns(10);
-		textField1.setBounds(294, 116, 162, 20);
+		textField1.setBounds(294, 85, 162, 20);
 		RFrame.getContentPane().add(textField1);
 		
 		JButton btn1 = new JButton("SIGN UP");
@@ -154,6 +156,24 @@ import javax.swing.JRadioButton;public class UserRegister {
 					if(g>0)
 						JOptionPane.showMessageDialog(RFrame,"Already registered!");
 					else {
+						boolean fl=true;
+						String s=textField1.getText();
+						for(int i=0;i<s.length();i++) {
+							if(s.charAt(i)>=65 && s.charAt(i)<=90)
+								continue;
+							else if(s.charAt(i)>=97 && s.charAt(i)<=122)
+								continue;
+							else if(s.charAt(i)==' ')
+								continue;
+							else{
+								fl=false;
+								break;
+							}
+						}
+						if(fl==false) 
+							JOptionPane.showMessageDialog(RFrame,"Name should contain only lowercase,\nuppercase letters");
+						else {
+						
 					// To check if the email got valid format
 						if(s1.contains("@gmail.com")) {
 				for(int i=0;i<s1.length()-10;i++) {
@@ -174,7 +194,7 @@ import javax.swing.JRadioButton;public class UserRegister {
 					flag=false;
 						
 				if(flag==false) {
-					 JOptionPane.showMessageDialog(btn1,"Email shall contains lowercase letters,numbers, and ends with suffix (@gmail.com)");
+					 JOptionPane.showMessageDialog(RFrame,"Email shall contains lowercase letters,numbers, \nand ends with suffix (@gmail.com)");
 				}else {
 					//To check if the password got valid format
 					String pw1=passwordField1.getText();
@@ -197,8 +217,32 @@ import javax.swing.JRadioButton;public class UserRegister {
 						}
 					}
 					if(flag2==false || count1<1 ||count2<1 || count3<1) {
-						JOptionPane.showMessageDialog(btn1,"Use atleast 8 characters one uppercase letter one lowercase letter one number and must not contain space");
+						JOptionPane.showMessageDialog(RFrame,"Use atleast 8 characters, one uppercase letter, one lowercase letter, \none number and must not contain space");
 					}else {
+						String a=textField4.getText();
+						boolean f=true;
+						if(a.length()==1 && a.charAt(0)=='0') {
+							JOptionPane.showMessageDialog(btn1,"Age not valid");
+							f=false;
+						}else {
+		                 for(int i=0;i<a.length();i++) {
+		                	if(a.charAt(i)>=47 && a.charAt(i)<=58) 
+		                		continue;
+		                	else {
+		                		JOptionPane.showMessageDialog(RFrame,"Age not valid, enter as integer");
+		                		f=false;
+		                		break;
+		                	}
+		                 }
+						}
+						if(f==true) {
+						int age=Integer.parseInt(textField4.getText());
+						if(age<18) 
+							JOptionPane.showMessageDialog(RFrame,"User must be above 18 to register");
+						else {
+							String m=textField3.getText();
+							if(m.charAt(0)=='6' || m.charAt(0)=='7' || m.charAt(0)=='8'||m.charAt(0)=='9') {
+								if(m.length()==10) {
 						// insert the user into registration table in database
 						String name=textField1.getText();
 						String gender="";
@@ -207,7 +251,7 @@ import javax.swing.JRadioButton;public class UserRegister {
 						else if(r2.isSelected())
 							gender="Female";
 						
-						String query="insert into registration values(?,?,?,?)";
+						String query="insert into registration values(?,?,?,?,?)";
 						
 						     con=DbConnection.getConnection();
 							PreparedStatement pst=con.prepareStatement(query);
@@ -215,28 +259,37 @@ import javax.swing.JRadioButton;public class UserRegister {
 							pst.setString(2,s1);
 							pst.setString(3,pw1);
 							pst.setString(4,gender);
+							pst.setString(5,m);
 							int rows=pst.executeUpdate();
 							if(rows>0)
-							JOptionPane.showMessageDialog(btn1,"Registered Successfully..");
+							JOptionPane.showMessageDialog(RFrame,"Registered Successfully..");
 							//To send the registered user, confirmation mail
 							
 						Email t=new Email();
 						t.register(s1,name,gender);
 					
+					}else
+						JOptionPane.showMessageDialog(RFrame, "mobile number should've 10 digits");
+				}else
+					JOptionPane.showMessageDialog(RFrame, "mobile number should be in correct format");
+
+						}
+					}
 					}
 				}
+					}
 					}
 					}
 				catch(Exception y) {
 					System.out.println(y);
 				}
 				}else
-					JOptionPane.showMessageDialog(btn1,"Choose the gender");
+					JOptionPane.showMessageDialog(RFrame,"Choose the gender");
 				}
 			}
 		});
 		btn1.setFont(new Font("Calibri", Font.BOLD, 12));
-		btn1.setBounds(294, 303, 79, 23);
+		btn1.setBounds(295, 368, 79, 23);
 		RFrame.getContentPane().add(btn1);
 		
 		JButton btn2 = new JButton("LOGIN");
@@ -250,7 +303,7 @@ import javax.swing.JRadioButton;public class UserRegister {
 			}
 		});
 		btn2.setFont(new Font("Calibri", Font.BOLD, 12));
-		btn2.setBounds(383, 303, 73, 23);
+		btn2.setBounds(392, 368, 73, 23);
 		RFrame.getContentPane().add(btn2);
 		
 		pass2 = new JPasswordField();
@@ -260,7 +313,7 @@ import javax.swing.JRadioButton;public class UserRegister {
 				String pw1=passwordField1.getText();
 				String pw2=pass2.getText();
 				if(!pw1.equals(pw2)) {
-					JOptionPane.showMessageDialog(btn2, "Incorrect password");
+					JOptionPane.showMessageDialog(btn1, "Incorrect password");
 				}
 			}
 		});
@@ -271,14 +324,14 @@ import javax.swing.JRadioButton;public class UserRegister {
 		 r1.setForeground(Color.WHITE);
 		 r1.setBackground(Color.BLACK);
 		r1.setFont(new Font("Calibri", Font.BOLD, 15));
-		r1.setBounds(294, 249, 66, 23);
+		r1.setBounds(295, 320, 66, 23);
 		RFrame.getContentPane().add(r1);
 		
 		 r2 = new JRadioButton("Female");
 		 r2.setForeground(Color.WHITE);
 		 r2.setBackground(Color.BLACK);
 		r2.setFont(new Font("Calibri", Font.BOLD, 15));
-		r2.setBounds(383, 249, 73, 23);
+		r2.setBounds(392, 320, 73, 23);
 		RFrame.getContentPane().add(r2);
 		
 		ButtonGroup bg=new ButtonGroup();
@@ -288,13 +341,49 @@ import javax.swing.JRadioButton;public class UserRegister {
 		JLabel label6 = new JLabel("Gender:");
 		label6.setForeground(Color.RED);
 		label6.setFont(new Font("Calibri", Font.BOLD, 15));
-		label6.setBounds(223, 245, 62, 25);
+		label6.setBounds(223, 319, 62, 25);
 		RFrame.getContentPane().add(label6);
 		
-		JLabel ilabel = new JLabel("");
-		ilabel.setIcon(new ImageIcon("C:\\Users\\ELCOT\\Downloads\\UserRegister.jpg"));
-		ilabel.setBounds(0, 0, 720, 421);
-		RFrame.getContentPane().add(ilabel);
+		JButton admin = new JButton("Admin");
+		admin.setBackground(Color.BLACK);
+		admin.setForeground(Color.WHITE);
+		admin.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				AdminLogin a=new AdminLogin();
+				a.frame.setVisible(true);
+				RFrame.dispose();
+			}
+		});
+		admin.setFont(new Font("Calibri", Font.BOLD, 15));
+		admin.setBounds(631, 11, 79, 23);
+		RFrame.getContentPane().add(admin);
+		
+		JLabel lblPhoneNo = new JLabel("Phone No:");
+		lblPhoneNo.setForeground(Color.RED);
+		lblPhoneNo.setFont(new Font("Calibri", Font.BOLD, 15));
+		lblPhoneNo.setBounds(210, 248, 79, 25);
+		RFrame.getContentPane().add(lblPhoneNo);
+		
+		textField3 = new JTextField();
+		textField3.setColumns(10);
+		textField3.setBounds(294, 248, 162, 20);
+		RFrame.getContentPane().add(textField3);
+		
+		JLabel lblAge = new JLabel("Age:");
+		lblAge.setForeground(Color.RED);
+		lblAge.setFont(new Font("Calibri", Font.BOLD, 15));
+		lblAge.setBounds(242, 284, 47, 25);
+		RFrame.getContentPane().add(lblAge);
+		
+		textField4 = new JTextField();
+		textField4.setColumns(10);
+		textField4.setBounds(295, 279, 162, 20);
+		RFrame.getContentPane().add(textField4);
+		
+		JLabel lblNewLabel = new JLabel("");
+		lblNewLabel.setIcon(new ImageIcon("C:\\Users\\ELCOT\\Downloads\\UserRegister.jpg"));
+		lblNewLabel.setBounds(0, 0, 720, 421);
+		RFrame.getContentPane().add(lblNewLabel);
 		
 	}
 	public void check() throws Exception {

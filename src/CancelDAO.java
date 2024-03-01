@@ -3,6 +3,7 @@ import java.awt.EventQueue;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 
 import java.sql.*;
 import javax.swing.JLabel;
@@ -77,6 +78,37 @@ public class CancelDAO {
 				CancelTicket c=new CancelTicket();
 				c.CancelFrame.setVisible(true);
 				CancelDAOFrame.dispose();
+				
+				String q="select id,Tno,name from Train";
+				try {
+				Connection con=DbConnection.getConnection();
+				PreparedStatement pst=con.prepareStatement(q);
+				ResultSet rs=pst.executeQuery();
+				
+				 ResultSetMetaData rsmd=rs.getMetaData();
+    		     DefaultTableModel model=(DefaultTableModel) CancelTicket.table.getModel();
+    		    	
+    		    	int cols=rsmd.getColumnCount();
+    		    	String[] colName=new String[cols];
+    		    	for(int i=0;i<cols;i++)
+    		    		colName[i]=rsmd.getColumnName(i+1);
+    		    
+    		    	model.setColumnIdentifiers(colName);
+    		    	
+    		    	String id,TrainNo,name;
+    		    	while(rs.next()) {
+    		    		id=rs.getString(1);
+    		    		TrainNo=rs.getString(2);
+    		    	     name=rs.getString(3);
+    		    		
+    		    		String[] row= {id,TrainNo,name};
+    		    		
+    		    		model.addRow(row);
+    		    	}
+
+				}catch(Exception exp) {
+					System.out.println(exp);
+				}
 			}
 		});
 		btn2.setFont(new Font("Calibri", Font.BOLD, 15));
@@ -277,18 +309,15 @@ public class CancelDAO {
 		ResultSet r=pst.executeQuery();
 		r.next();
 		String em=r.getString(1);
-		int fr=0,u=0;
-		if(tr.equals("train1")) {
-			fr=1;
-			u=400;
-		}
-		else if(tr.equals("train2")) {
-			fr=2; 
-			u=150;
-		}else if(tr.equals("train3")) {
-			fr=3;
-			u=300;
-		}
+
+		String qr="select fare from Train where id=?";
+		pst=con.prepareStatement(qr);
+		pst.setInt(1,CancelTicket.g);
+		rs=pst.executeQuery();
+		rs.next();
+		int u=rs.getInt(1);
+		int fr=CancelTicket.g;
+		
 		String q6="Update fare"+fr+" set Fare=Fare-? where date=? and id=?";
 		pst=con.prepareStatement(q6);
 		pst.setInt(1, u);

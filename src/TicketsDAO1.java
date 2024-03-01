@@ -103,29 +103,20 @@ public class TicketsDAO1 {
     		    		
     		    		model.addRow(row);
     		    	}
-    		    	if(train.equals("train1")) {
-    		    		Express="12633";
-    		    		b.label2.setText("12633 KANYAKUMARI EXP");
-    		    		b.label3.setText("19:00 Chennai Egmore");
-    		    		b.label4.setText("---10h 35m---");
-    		    		b.label5.setText("05:35 Kanyakumari");
-    		    		b.label6.setText("Fair: 400rs");
-    		    	}else if(train.equals("train2")) {
-    		    		Express="16182";
-    		    		b.label2.setText("16182 SILAMBU EXPRESS");
-    		    		b.label3.setText("20:45 Sivaganga");
-    		    		b.label4.setText("---45min---");
-    		    		b.label5.setText("21:30 Karaikudi");
-    		    		b.label6.setText("Fair: 150rs");
-    		    	}else if(train.equals("train3")) {
-    		    		Express="16615";
-    		    		b.label2.setText("16615 CHENMOZHI EXP");
-    		    		b.label3.setText("23:00 Trichy");
-    		    		b.label4.setText("---5h 45m---");
-    		    		b.label5.setText("4:45 Coimbatore");
-    		    		b.label6.setText("Fair: 300rs");
-    		    
-    		    	}
+    		    	
+    		        con=DbConnection.getConnection();
+    	    		String qr="select * from Train where Tno=?";
+    	    		PreparedStatement pst=con.prepareStatement(qr);
+    	    		pst.setString(1,Train.number);
+    	    		ResultSet r=pst.executeQuery();
+    	    		r.next();
+    	    		
+    		    	String exp=r.getString(2);
+    	    		b.label2.setText(exp+" "+r.getString(3));
+    	    		b.label3.setText(r.getString(6)+" "+r.getString(4));
+    	    		b.label5.setText(r.getString(7)+" "+r.getString(5));
+    	    		b.label6.setText("Fair: "+r.getInt(13));
+    		    	
     		    	Booking.label10.setText("Total Fare: "+total+"rs");
     		    	
 				}catch(Exception exc) {
@@ -272,13 +263,13 @@ public class TicketsDAO1 {
 		    	 rs.next();
 		    	 String Express=rs.getString(1);
 		    	 
-		    	 if(Express.equals("12633")) {
-		    		 Express="12633 KANYAKUMARI EXP";
-		    	 }else if(Express.equals("16182")) {
-		    		 Express="16182 SILAMBU EXPRESS";
-		    	 }else if(Express.equals("16615")) {
-		    		 Express="16615 CHENMOZHI EXP";
-		    	 }
+		    	 String qy2="select name from Train where Tno=?";
+		    	 pst=con.prepareStatement(qy2);
+		    	 pst.setString(1, Express);
+		    	 rs=pst.executeQuery();
+		    	 rs.next();
+		    	 Express=Express+" "+rs.getString(1);
+		    	 
 				   String berth2=berth+pos;
 				   Email t=new Email();
 				   t.sendMail(name,berth2,email,date,Express,gender);
@@ -381,13 +372,13 @@ public static void bookedList(String name,int age,int pos,String alloted,String 
 			    	 rs.next();
 			    	 String Express=rs.getString(1);
 			    	 
-			    	 if(Express.equals("12633")) {
-			    		 Express="12633 KANYAKUMARI EXP";
-			    	 }else if(Express.equals("16182")) {
-			    		 Express="16182 SILAMBU EXPRESS";
-			    	 }else if(Express.equals("16615")) {
-			    		 Express="16615 CHENMOZHI EXP";
-			    	 }
+			    	 String qy2="select name from Train where Tno=?";
+			    	 pst=con.prepareStatement(qy2);
+			    	 pst.setString(1, Express);
+			    	 rs=pst.executeQuery();
+			    	 rs.next();
+			    	 Express=Express+" "+rs.getString(1);
+			    	 
 					   String berth2=berth+pos;
 					   Email t=new Email();
 					   t.sendMail(name,berth2,email,date,Express,gender);
@@ -489,22 +480,20 @@ public static void bookedList(String name,int age,int pos,String alloted,String 
    }
    //To calculate the fare
    public static void fare(String train,String em) throws Exception {
-	   int fr=0;
-	   int tb=0;
-	   if(train.equals("train1")) {
-		   fr=400;
-		   tb=1;
-	   }else if(train.equals("train2")) {
-		   fr=150;
-		   tb=2;
-	   }else if(train.equals("train3")) {
-		   fr=300;
-		   tb=3;
-	   }
 	   Connection con=DbConnection.getConnection();
+	   
+	   int tb=Train.id;
+	  String qr="select fare from Train where Fr=? and T=?";
+	  PreparedStatement pst=con.prepareStatement(qr);
+	  pst.setString(1,Train.from);
+	  pst.setString(2,Train.to);
+	   ResultSet rs=pst.executeQuery();
+	   rs.next();
+	   int fr=rs.getInt(1);
+	   
 	   String q="select count(*) from bookedlist"+kid+" where email='"+em+"'";
    	Statement st=con.createStatement();
-   	ResultSet rs=st.executeQuery(q);
+    rs=st.executeQuery(q);
    	rs.next();
    	int f=rs.getInt(1);
    	
@@ -530,7 +519,7 @@ public static void bookedList(String name,int age,int pos,String alloted,String 
    	if(rs.getInt(1)>0) {
    		//update the total fare
    		String qy4="update fare"+tb+" set Fare=? where id=? and date=?";
-   		PreparedStatement pst=con.prepareStatement(qy4);
+   		 pst=con.prepareStatement(qy4);
    		pst.setInt(1, total);
    		pst.setString(2,em);
    		pst.setString(3,date);
@@ -538,7 +527,7 @@ public static void bookedList(String name,int age,int pos,String alloted,String 
    		
    	}else{
    		String qy2="insert into fare"+tb+" values(?,?,?,?)";
-   		PreparedStatement pst=con.prepareStatement(qy2);
+   		 pst=con.prepareStatement(qy2);
    		pst.setInt(1,fr);
    		pst.setString(2,date);
    		pst.setString(3,em);

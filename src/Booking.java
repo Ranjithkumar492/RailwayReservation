@@ -14,7 +14,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.Statement;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.awt.event.ActionEvent;
@@ -54,7 +58,7 @@ public class Booking {
 	private JLabel label9;
 	public static JLabel label10;
 	private JLabel ilabel;
-   
+	 public static int fr;
 	/**
 	 * Launch the application.
 	 */
@@ -121,6 +125,10 @@ public class Booking {
 				//To check if the age is valid
 				String a=textField2.getText();
 				boolean flag=true;
+				if(a.length()==1 && a.charAt(0)=='0') {
+					JOptionPane.showMessageDialog(btn1,"Age not valid");
+					flag=false;
+				}else {
                  for(int i=0;i<a.length();i++) {
                 	if(a.charAt(i)>=47 && a.charAt(i)<=58) {
                 		continue;
@@ -130,6 +138,7 @@ public class Booking {
                 		break;
                 	}
                  }
+				}
                  if(flag==true) {
                 	
 				int age=Integer.parseInt(a);
@@ -206,6 +215,40 @@ public class Booking {
 				Train t=new Train();
 				t.TrainFrame.setVisible(true);
 				BookingFrame.dispose();
+				
+				try {
+				Connection con=DbConnection.getConnection();
+					table.setModel(new DefaultTableModel());
+					String q2="select  Tno,name,Fr,T,DTime,RTime from Train";
+					PreparedStatement pst=con.prepareStatement(q2);
+					ResultSet rs=pst.executeQuery();
+					
+					 ResultSetMetaData rsmd=rs.getMetaData();
+	    		     DefaultTableModel model=(DefaultTableModel) Train.table.getModel();
+	    		    	
+	    		    	int cols=rsmd.getColumnCount();
+	    		    	String[] colName=new String[cols];
+	    		    	for(int i=0;i<cols;i++)
+	    		    		colName[i]=rsmd.getColumnName(i+1);
+	    		    
+	    		    	model.setColumnIdentifiers(colName);
+	    		    	
+	    		    	String TrainNo,name,From,To,DTime,RTime;
+	    		    	while(rs.next()) {
+	    		    		TrainNo=rs.getString(1);
+	    		    	     name=rs.getString(2);
+	    		    		From=rs.getString(3);
+	    		    		To=rs.getString(4);
+	    		    		DTime=rs.getString(5);
+	    		    		RTime=rs.getString(6);
+	 
+	    		    		String[] row= {TrainNo,name,From,To,DTime,RTime};
+	    		    		
+	    		    		model.addRow(row);
+	    		    	}
+				}catch(Exception Exp) {
+					System.out.println(Exp);
+				}
 			}
 		});
 		btn3.setFont(new Font("Calibri", Font.BOLD, 15));
@@ -299,41 +342,31 @@ public class Booking {
 		
 	}
 	//To check the train on user's given date
-	 public  void checking(Object from,Object To, String date) throws Exception {
+	 public  void checking(String date,int id,String n) throws Exception {
 		 
 		 //To set the details about train
-	    	if(from.equals("Chennai Egmore")) {
-	    		exp="12633";
-	    		tr="train1";
-	    		label2.setText("12633 KANYAKUMARI EXP");
-	    		label3.setText("19:00 Chennai Egmore");
-	    		label4.setText("---10h 35m---");
-	    		label5.setText("05:35 Kanyakumari");
-	    		label6.setText("Fair: 400rs");
-	    	}else if(from.equals("Sivaganga")){
-	    		exp="16182";
-	    		tr="train2";
-	    		label2.setText("16182 SILAMBU EXPRESS");
-	    		label3.setText("20:45 Sivaganga");
-	    		label4.setText("---45min---");
-	    		label5.setText("21:30 Karaikudi");
-	    		label6.setText("Fair: 150rs");
-	    	}else if(from.equals("Trichy")) {
-	    		exp="16615";
-	    		tr="train3";
-	    		label2.setText("16615 CHENMOZHI EXP");
-	    		label3.setText("23:00 Trichy");
-	    		label4.setText("---5h 45m---");
-	    		label5.setText("4:45 Coimbatore");
-	    		label6.setText("Fair: 300rs");
-	    	}
+	    	
 	    	try {
+	    		Connection con=DbConnection.getConnection();
+	    		String qr="select * from Train where Tno=?";
+	    		PreparedStatement pst=con.prepareStatement(qr);
+	    		pst.setString(1,n);
+	    		ResultSet r=pst.executeQuery();
+	    		r.next();
+	    		
+	    		exp=r.getString(2);
+	    		tr="train"+id;
+	    		label2.setText(exp+" "+r.getString(3));
+	    		label3.setText(r.getString(6)+" "+r.getString(4));
+	    		label5.setText(r.getString(7)+" "+r.getString(5));
+	    		label6.setText("Fair: "+r.getInt(13));
+	    		
 	    		//To check if the train is available on particular date
 	    		String q1="select count(*) from "+tr+" where Date1=?";
-	    		Connection con=DbConnection.getConnection();
-	    		PreparedStatement pst=con.prepareStatement(q1);
+	    		
+	    		pst=con.prepareStatement(q1);
 	    		pst.setString(1, date);
-	    		ResultSet rs=pst.executeQuery();
+	    	    ResultSet rs=pst.executeQuery();
 	    		rs.next();
 	    		int g=rs.getInt(1);
 	
@@ -375,14 +408,19 @@ public class Booking {
 	    		    	rs=pst.executeQuery();
 	    		    	rs.next();
 	    		    	k=rs.getInt(1);
-	    		    	 	
+	    		    	 find(exp);
 	    		}else {
 	    			
 	               //To create new train on user's given date
-	    			String q2="insert into "+tr+" values (?,1,1,1,2,2,?)";
+	    			String q2="insert into "+tr+" values (?,?,?,?,?,?,?)";
 	    			pst=con.prepareStatement(q2);
 	    			pst.setString(1,exp);
-	    			pst.setString(2,date);
+	    			pst.setInt(2,r.getInt(8));
+	    			pst.setInt(3,r.getInt(9));
+	    			pst.setInt(4,r.getInt(10));
+	    			pst.setInt(5,r.getInt(11));
+	    			pst.setInt(6,r.getInt(12));
+	    			pst.setString(7, date);
 	    			pst.executeUpdate();
 	    			
 	    			String q3="select * from "+tr+" where Date1=?";
@@ -445,7 +483,14 @@ public class Booking {
 	    		    st=con.createStatement();
 	    		    st.executeUpdate(q5);
 	    		    
-	    		    for(int i=1;i<2;i++) {
+	    		    String qy="select L from Train where id=?";
+	    		    pst=con.prepareStatement(qy);
+	    		    pst.setInt(1,id);
+	    		    rs=pst.executeQuery();
+	    		    rs.next();
+	    		    int l=rs.getInt(1);
+	    		    
+	    		    for(int i=1;i<=l;i++) {
 	    		    	String q6="insert into L"+k+" values(?)";
 	    		    	pst=con.prepareStatement(q6);
 	    		    	pst.setInt(1,i);
@@ -456,7 +501,7 @@ public class Booking {
 	    		     st=con.createStatement();
 	    		    st.executeUpdate(q6);
 	    		    
-	    		    for(int i=1;i<2;i++) {
+	    		    for(int i=1;i<=l;i++) {
 	    		    	String q7="insert into M"+k+" values(?)";
 	    		    	pst=con.prepareStatement(q7);
 	    		    	pst.setInt(1,i);
@@ -467,7 +512,7 @@ public class Booking {
 	    		     st=con.createStatement();
 	    		    st.executeUpdate(q8);
 	    		    
-	    		    for(int i=1;i<2;i++) {
+	    		    for(int i=1;i<=l;i++) {
 	    		    	String q9="insert into U"+k+" values(?)";
 	    		    	pst=con.prepareStatement(q9);
 	    		    	pst.setInt(1,i);
@@ -478,7 +523,14 @@ public class Booking {
 	    		    st=con.createStatement();
 	    		    st.executeUpdate(q10);
 	    		    
-	    		    for(int i=1;i<3;i++) {
+	    		    String qy2="select RAC from Train where id=?";
+	    		    pst=con.prepareStatement(qy2);
+	    		    pst.setInt(1,id);
+	    		    rs=pst.executeQuery();
+	    		    rs.next();
+	    		    int rac=rs.getInt(1);
+	    		    
+	    		    for(int i=1;i<=rac;i++) {
 	    		    	String q11="insert into RAC"+k+" values(?)";
 	    		    	pst=con.prepareStatement(q11);
 	    		    	pst.setInt(1,i);
@@ -489,7 +541,14 @@ public class Booking {
 	    		     st=con.createStatement();
 	    		    st.executeUpdate(q12);
 	    		    
-	    		    for(int i=1;i<3;i++) {
+	    		    String qy3="select WL from Train where id=?";
+	    		    pst=con.prepareStatement(qy3);
+	    		    pst.setInt(1,id);
+	    		    rs=pst.executeQuery();
+	    		    rs.next();
+	    		    int wl=rs.getInt(1);
+	    		    
+	    		    for(int i=1;i<=wl;i++) {
 	    		    	String q13="insert into WL"+k+" values(?)";
 	    		    	pst=con.prepareStatement(q13);
 	    		    	pst.setInt(1,i); 
@@ -509,7 +568,7 @@ public class Booking {
 	               st.executeUpdate(q15);
 	               
 	               //call the find function to set the time
-	               find();	 
+	              find(exp);	 
 		}
 	    
 	 }catch(Exception e) {
@@ -556,10 +615,17 @@ public class Booking {
 							if(b>0 || r>0 || w>0) {
 								//call the method unique
 								unique(b,r,w,kid,train,date1);
-							}else
-								drop(train,kid,date1,false);
+							}else {
+								String q="select id from Train where Tno=?";
+								pst2=con.prepareStatement(q);
+								pst2.setString(1,train);
+								r1=pst2.executeQuery();
+								r1.next();
+								int t=r1.getInt(1);
+								
+								drop(t,kid,date1,false);
 				
-		
+							}
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -586,56 +652,44 @@ public class Booking {
 			 da2=Integer.parseInt(da);
 			
 		}else {
+			 if(Train.rtime==23) {
+		  		 int day=0;
+			        int mo=0;
+					 if( Train.rtime==23 && Train.da4==1) {
+						 LocalDate localD=LocalDate.parse(Train.s,DateTimeFormatter.ofPattern("d-M-yyyy"));
+						 localD=localD.withDayOfMonth(localD.getMonth().length(localD.isLeapYear()));
+						 day=localD.getDayOfMonth();
+						 mo=Train.month2-1;
+					 }else if(Train.rtime==23) {
+							day=Train.da4-1;
+							mo=Train.month2;
+						}
+					year=Train.year2;
+					month=mo;
+					da2=day;
+		  	   }else {
 			year=Train.year2;
 			month=Train.month2;
 			da2=Train.da4;
+		  	   }
 		}
 		 
-		 if(train.equals("12633")) {
-			 
 		 int k=month-1;
 		 Calendar date=Calendar.getInstance();
 		 date.set(Calendar.YEAR,year);
 		 date.set(Calendar.MONTH,k);
 		 date.set(Calendar.DAY_OF_MONTH,da2);
-		 date.set(Calendar.HOUR,6);
+		 date.set(Calendar.HOUR_OF_DAY,Train.rtime);
 		 date.set(Calendar.MINUTE,0);
 		 date.set(Calendar.SECOND,0);
 		 date.set(Calendar.MILLISECOND,0);
-		 
+		
 		 System.out.println(date.getTime());
 		 
 		 //execute the task on particular time which we set
 		 timer.schedule(task,date.getTime());
 		 
-		 }else if(train.equals("16182")) {
-			 int k=month-1;
-			 Calendar date=Calendar.getInstance();
-			 date.set(Calendar.YEAR,year);
-			 date.set(Calendar.MONTH,k);
-			 date.set(Calendar.DAY_OF_MONTH,da2);
-			 date.set(Calendar.HOUR,8);
-			 date.set(Calendar.MINUTE,0);
-			 date.set(Calendar.SECOND,0);
-			 date.set(Calendar.MILLISECOND,0);
-			 
-			 System.out.println(date.getTime());
-			 timer.schedule(task,date.getTime());
-			 
-		 }else if(train.equals("16615")) {
-			 int k=month-1;
-			 Calendar date=Calendar.getInstance();
-			 date.set(Calendar.YEAR,year);
-			 date.set(Calendar.MONTH,k);
-			 date.set(Calendar.DAY_OF_MONTH,da2);
-			 date.set(Calendar.HOUR,10);
-			 date.set(Calendar.MINUTE,0);
-			 date.set(Calendar.SECOND,0);
-			 date.set(Calendar.MILLISECOND,0);
-			 
-			 System.out.println(date.getTime());
-			 timer.schedule(task,date.getTime());
-		 }
+		
 	 }
 	 public void unique(int b,int r,int w,int kid,String train,String date) throws Exception {
 		 Connection con2=DbConnection.getConnection();
@@ -738,18 +792,16 @@ public class Booking {
 					gd="Ms.";
 				
 				//set the train details
-				String exp="";
-				int fr=0;
-				if(train.equals("12633")) {
-					 exp="12633 KANYAKUMARI EXP";
-					 fr=1;
-				}else if(train.equals("16182")) {
-					exp="16182 SILAMBU EXPRESS";
-					fr=2;
-				}else if(train.equals("16615")) {
-					exp="16615 CHENMOZHI EXP";
-					fr=3;
-				}
+				String qr="select id,name,fare from Train where Tno=?";
+				pst3=con2.prepareStatement(qr);
+				pst3.setString(1,train);
+				 r3=pst3.executeQuery();
+				r3.next();
+				
+				 fr=r3.getInt(1);
+				String exp=train+" "+r3.getString(2);
+				int m=r3.getInt(3);
+				
 				String s1="Hi "+gd+name+", final status of your bookings \nTrain: "+exp+" \nDate: "+date+" \n";
 				
 				String qy="select count(*) from bookedlist"+kid+" where email=?";
@@ -837,13 +889,6 @@ public class Booking {
 				rt2=ps2.executeQuery();
 				rt2.next();
 				int c=rt2.getInt(2);
-				int m=0;
-				if(fr==1) 
-					m=400;
-				else if(fr==2)
-					m=150;
-				else if(fr==3)
-					m=300;
 				
 				int fare=rt2.getInt(1)-c1*m;
 				int rf=0;
@@ -863,14 +908,15 @@ public class Booking {
 				em.confirmMail(email,s1);
 			}
 			
-			drop(train,kid,date,true);
+			drop(fr,kid,date,true);
 		  }
  
 
-   public void find() throws Exception {
+   public void find(String exp) throws Exception {
 	   String date="";
-	   //To get the Today's date
-  	   if(Train.month2<=9 && Train.da4<=9)
+	  
+  		 //To get the Today's date
+  		 if(Train.month2<=9 && Train.da4<=9)
   			 date="0"+Train.da4+"-0"+Train.month2+"-"+Train.year2;
          else if(Train.da4<=9)
         	 date="0"+Train.da4+"-"+Train.month2+"-"+Train.year2;
@@ -878,44 +924,12 @@ public class Booking {
         	 date=Train.da4+"-0"+Train.month2+"-"+Train.year2;
          else 
         	 date=Train.da4+"-"+Train.month2+"-"+Train.year2;
-
   	   
-  	   //To check if the train is available on today's date
-  	   String q1="select count(*) from train1 where Date1=?";
-  	   Connection con=DbConnection.getConnection();
-  	   PreparedStatement pst=con.prepareStatement(q1);
-  	   pst.setString(1,date);
-  	   ResultSet rs=pst.executeQuery();
-  	   rs.next();
- 
-  	   if((rs.getInt(1)>0)) {
   		   //call the time function to set timer
-  		   time("12633",date,true);
-  	   }
-       
-  	 String q2="select count(*) from train2 where Date1=?";
-	    con=DbConnection.getConnection();
-	    pst=con.prepareStatement(q2);
-	   pst.setString(1,date);
-	    rs=pst.executeQuery();
-	   rs.next();
-	   if((rs.getInt(1)>0)) {
-		   time("16182",date,true);
-	   }
-	   
-	   String q3="select count(*) from train3 where Date1=?";
-	    con=DbConnection.getConnection();
-	    pst=con.prepareStatement(q3);
-	   pst.setString(1,date);
-	    rs=pst.executeQuery();
-	   rs.next();
-	   if((rs.getInt(1)>0)) {
-		   time("16615",date,true);
-	   }
-	   
+  		   time(exp,date,true);
    }
    
-   public void drop(String train,int kid,String date,boolean flag) throws Exception {
+   public void drop(int t,int kid,String date,boolean flag) throws Exception {
 	 //here we drop the tables that no longer in use
 	   
 	   String qy2="drop table bookedlist"+kid;
@@ -949,26 +963,12 @@ public class Booking {
 	   pst=con2.prepareStatement(qy9);
 	   pst.executeUpdate();
 	   
-	   int fe=0;
-	   if(train.equals("12633")) {
-		   fe=1;
-		   String qy10="delete from train1 where Date1=?";
-		   pst=con2.prepareStatement(qy10);
-		   pst.setString(1,date);
-		   pst.executeUpdate();
-	   }else if(train.equals("16182")) {
-		   fe=2;
-		   String qy11="delete from train2 where Date1=?";
-		   PreparedStatement pst1=con2.prepareStatement(qy11);
-		   pst1.setString(1,date);
-		   pst1.executeUpdate();
-	   }else if(train.equals("16615")) {
-		   fe=3;
-		   String qy12="delete from train3 where Date1=?";
-		   PreparedStatement pst2=con2.prepareStatement(qy12);
-		   pst2.setString(1,date);
-		   pst2.executeUpdate();
-	   }
+	  
+	   String qy10="delete from train"+t+" where Date1=?";
+	   pst=con2.prepareStatement(qy10);
+	   pst.setString(1,date);
+	   pst.executeUpdate();
+		   
 	   String qy11="delete from id where id="+kid;
 	   pst=con2.prepareStatement(qy11);
 	   pst.executeUpdate(); 
@@ -978,7 +978,7 @@ public class Booking {
 		   pst=con2.prepareStatement(qy);
 		   pst.executeUpdate();
 		   
-	   String qy12="delete from fare"+fe+" where date=?";
+	   String qy12="delete from fare"+t+" where date=?";
 	   pst=con2.prepareStatement(qy12);
 	   pst.setString(1,date);
 	   pst.executeUpdate();

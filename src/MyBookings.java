@@ -39,12 +39,13 @@ public class MyBookings {
 	private JTable table2;
 	private JTable table3;
     public static String email;
-    JList list;
 	JButton btn1;
     JDateChooser dateChooser;
      String exp;
      String train;
      int kid;
+    public static JTable Btable;
+    private JTextField textField1;
 	/**
 	 * Launch the application.
 	 */
@@ -75,22 +76,24 @@ public class MyBookings {
 		MyBookingsFrame = new JFrame();
 		MyBookingsFrame.getContentPane().setForeground(Color.WHITE);
 		MyBookingsFrame.setBackground(Color.BLACK);
-		MyBookingsFrame.setBounds(100, 100,793,550);
+		MyBookingsFrame.setBounds(100, 100,790,550);
 		MyBookingsFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		MyBookingsFrame.setLocationRelativeTo(null);
 		MyBookingsFrame.getContentPane().setLayout(null);
 		
 		JLabel label1 = new JLabel("My Bookings");
-		label1.setForeground(new Color(50, 205, 50));
+		label1.setForeground(Color.RED);
 		label1.setFont(new Font("Calibri", Font.BOLD, 20));
 		label1.setBounds(306, 8, 118, 26);
 		MyBookingsFrame.getContentPane().add(label1);
 		
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(47, 206, 684, 88);
+		scrollPane.setBounds(47, 219, 684, 79);
 		MyBookingsFrame.getContentPane().add(scrollPane);
 		
 		table = new JTable();
+		table.setForeground(Color.WHITE);
+		table.setBackground(Color.BLACK);
 		scrollPane.setViewportView(table);
 		
 		JButton btn3 = new JButton("Home");
@@ -110,35 +113,39 @@ public class MyBookings {
 		MyBookingsFrame.getContentPane().add(btn3);
 		
 		JLabel label3 = new JLabel("Berth List:");
-		label3.setForeground(Color.CYAN);
+		label3.setForeground(Color.YELLOW);
 		label3.setFont(new Font("Calibri", Font.BOLD, 15));
-		label3.setBounds(57, 187, 68, 20);
+		label3.setBounds(57, 200, 68, 20);
 		MyBookingsFrame.getContentPane().add(label3);
 		
 		JScrollPane scrollPane_1 = new JScrollPane();
-		scrollPane_1.setBounds(47, 330, 684, 64);
+		scrollPane_1.setBounds(47, 325, 684, 64);
 		MyBookingsFrame.getContentPane().add(scrollPane_1);
 		
 		table2 = new JTable();
+		table2.setForeground(Color.WHITE);
+		table2.setBackground(Color.BLACK);
 		scrollPane_1.setViewportView(table2);
 		
 		JLabel label4 = new JLabel("RAC List:");
-		label4.setForeground(Color.CYAN);
+		label4.setForeground(Color.YELLOW);
 		label4.setFont(new Font("Calibri", Font.BOLD, 15));
-		label4.setBounds(57, 315, 68, 14);
+		label4.setBounds(57, 309, 68, 14);
 		MyBookingsFrame.getContentPane().add(label4);
 		
 		JLabel lable5 = new JLabel("Waiting List:");
-		lable5.setForeground(Color.CYAN);
+		lable5.setForeground(Color.YELLOW);
 		lable5.setFont(new Font("Calibri", Font.BOLD, 15));
-		lable5.setBounds(57, 415, 86, 20);
+		lable5.setBounds(57, 400, 86, 20);
 		MyBookingsFrame.getContentPane().add(lable5);
 		
 		JScrollPane scrollPane_2 = new JScrollPane();
-		scrollPane_2.setBounds(47, 436, 684, 64);
+		scrollPane_2.setBounds(47, 423, 684, 64);
 		MyBookingsFrame.getContentPane().add(scrollPane_2);
 		
 		table3 = new JTable();
+		table3.setForeground(Color.WHITE);
+		table3.setBackground(Color.BLACK);
 		scrollPane_2.setViewportView(table3);
 		
 	    btn1 = new JButton("show");
@@ -156,7 +163,7 @@ public class MyBookings {
 			}
 		});
 		btn1.setFont(new Font("Calibri", Font.BOLD, 15));
-		btn1.setBounds(292, 147, 68, 23);
+		btn1.setBounds(283, 166, 68, 23);
 		MyBookingsFrame.getContentPane().add(btn1);
 		
 		JButton btn2 = new JButton("clear");
@@ -170,68 +177,159 @@ public class MyBookings {
 			}
 		});
 		btn2.setFont(new Font("Calibri", Font.BOLD, 15));
-		btn2.setBounds(389, 147, 68, 23);
+		btn2.setBounds(409, 166, 68, 23);
 		MyBookingsFrame.getContentPane().add(btn2);
 		
 		JLabel label5 = new JLabel("Train:");
 		label5.setForeground(Color.WHITE);
 		label5.setFont(new Font("Calibri", Font.BOLD, 15));
-		label5.setBounds(156, 47, 52, 14);
+		label5.setBounds(47, 55, 52, 14);
 		MyBookingsFrame.getContentPane().add(label5);
-		
-		 list = new JList();
-		 list.setForeground(Color.WHITE);
-		 list.setBackground(Color.BLACK);
-		list.addListSelectionListener(new ListSelectionListener() {
-			public void valueChanged(ListSelectionEvent e) {
-				int indx=list.getSelectedIndex();
-				if(indx==0) {
-					exp="12633";
-					train="train1";
-				}else if(indx==1) {
-					exp="16182";
-					train="train2";
-				}else if(indx==2) {
-					exp="16615";
-					train="train3";
-				}
-			}
-		});
-		list.setFont(new Font("Calibri", Font.BOLD, 15));
-		list.setModel(new AbstractListModel() {
-			String[] values = new String[] {"12633  KANYAKUMARI EXP", "16182  SILAMBU EXPRESS", "16615  CHENMOZHI EXP"};
-			public int getSize() {
-				return values.length;
-			}
-			public Object getElementAt(int index) {
-				return values[index];
-			}
-		});
-		list.setBounds(156, 72, 165, 64);
-		MyBookingsFrame.getContentPane().add(list);
 		
 		JLabel label6 = new JLabel("Date:");
 		label6.setForeground(Color.WHITE);
 		label6.setFont(new Font("Calibri", Font.BOLD, 15));
-		label6.setBounds(372, 45, 52, 14);
+		label6.setBounds(463, 53, 45, 14);
 		MyBookingsFrame.getContentPane().add(label6);
 		
 	    dateChooser = new JDateChooser();
 	    dateChooser.setForeground(Color.BLACK);
 	    dateChooser.setBackground(Color.WHITE);
-		dateChooser.setBounds(382, 72, 118, 20);
+		dateChooser.setBounds(504, 49, 118, 20);
 		MyBookingsFrame.getContentPane().add(dateChooser);
 		
-		JLabel ilabel = new JLabel("");
-		ilabel.setIcon(new ImageIcon("C:\\Users\\ELCOT\\Downloads\\mbook.jpg"));
-		ilabel.setBounds(0, 0, 777, 511);
-		MyBookingsFrame.getContentPane().add(ilabel);
+		JScrollPane scrollPane_3 = new JScrollPane();
+		scrollPane_3.setBounds(45, 83, 684, 72);
+		MyBookingsFrame.getContentPane().add(scrollPane_3);
+		
+		Btable = new JTable();
+		Btable.setForeground(Color.WHITE);
+		Btable.setBackground(Color.BLACK);
+		scrollPane_3.setViewportView(Btable);
+		
+		textField1 = new JTextField();
+		textField1.setBounds(88, 50, 118, 20);
+		MyBookingsFrame.getContentPane().add(textField1);
+		textField1.setColumns(10);
+		
+		JButton btn5 = new JButton("Search");
+		btn5.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if(!textField1.getText().equals("")) {
+					String q="select count(*) from Train where name=?";
+					try {
+						Connection con=DbConnection.getConnection();
+						PreparedStatement pst=con.prepareStatement(q);
+						pst.setString(1,textField1.getText());
+						ResultSet rs=pst.executeQuery();
+						rs.next();
+						if(rs.getInt(1)>0) {
+							Btable.setModel(new DefaultTableModel());
+							
+							String q3="select id,Tno,name from Train where name=?";
+			    		    pst=con.prepareStatement(q3);
+			    		    pst.setString(1, textField1.getText());
+			    			 rs=pst.executeQuery();
+			    			 
+			    			 ResultSetMetaData rsmd=rs.getMetaData();
+			    		     DefaultTableModel model=(DefaultTableModel) Btable.getModel();
+			    		    	
+			    		    	int cols=rsmd.getColumnCount();
+			    		    	String[] colName=new String[cols];
+			    		    	for(int i=0;i<cols;i++)
+			    		    		colName[i]=rsmd.getColumnName(i+1);
+			    		    
+			    		    	model.setColumnIdentifiers(colName);
+			    		    	
+			    		    	String id,TrainNo,name;
+			    		    	while(rs.next()) {
+			    		    		id=rs.getString(1);
+			    		    		TrainNo=rs.getString(2);
+			    		    	     name=rs.getString(3);
+			    		    		String[] row= {id,TrainNo,name};
+			    		    		
+			    		    		model.addRow(row);
+			    		    	}
+							
+						}else
+							JOptionPane.showMessageDialog(btn3, "Train not available");
+					}catch(Exception exp) {
+						System.out.println(exp);
+					}
+					
+				}else
+					JOptionPane.showMessageDialog(btn3,"Enter the train name");
+			
+			}
+		});
+		btn5.setForeground(Color.WHITE);
+		btn5.setFont(new Font("Calibri", Font.BOLD, 15));
+		btn5.setBackground(Color.BLACK);
+		btn5.setBounds(237, 49, 77, 23);
+		MyBookingsFrame.getContentPane().add(btn5);
+		
+		JButton btn6 = new JButton("Reset");
+		btn6.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				Btable.setModel(new DefaultTableModel());
+				String q="select id,Tno,name from Train";
+				try {
+				Connection con=DbConnection.getConnection();
+				PreparedStatement pst=con.prepareStatement(q);
+				ResultSet rs=pst.executeQuery();
+				
+				 ResultSetMetaData rsmd=rs.getMetaData();
+    		     DefaultTableModel model=(DefaultTableModel) Btable.getModel();
+    		    	
+    		    	int cols=rsmd.getColumnCount();
+    		    	String[] colName=new String[cols];
+    		    	for(int i=0;i<cols;i++)
+    		    		colName[i]=rsmd.getColumnName(i+1);
+    		    
+    		    	model.setColumnIdentifiers(colName);
+    		    	
+    		    	String id,TrainNo,name;
+    		    	while(rs.next()) {
+    		    		id=rs.getString(1);
+    		    		TrainNo=rs.getString(2);
+    		    	     name=rs.getString(3);
+    		    		
+    		    		String[] row= {id,TrainNo,name};
+    		    		
+    		    		model.addRow(row);
+    		    	}
+
+				
+				}catch(Exception exp) {
+					System.out.println(exp);
+				}
+
+
+			}
+		});
+		btn6.setForeground(Color.WHITE);
+		btn6.setFont(new Font("Calibri", Font.BOLD, 15));
+		btn6.setBackground(Color.BLACK);
+		btn6.setBounds(353, 49, 77, 23);
+		MyBookingsFrame.getContentPane().add(btn6);
+		
+		JLabel lblNewLabel = new JLabel("");
+		lblNewLabel.setIcon(new ImageIcon("C:\\Users\\ELCOT\\Downloads\\mbook.jpg"));
+		lblNewLabel.setBounds(0, 0, 774, 511);
+		MyBookingsFrame.getContentPane().add(lblNewLabel);
 	}
 	
 	public void show(JButton btn1) throws Exception {
-		int indx=list.getSelectedIndex();
+		int indx=Btable.getSelectedRow();
+		
 		//To check if the user selected the train
+		int y=0;
 		if(indx>=0) {
+			DefaultTableModel model=(DefaultTableModel) Btable.getModel();
+		     y=Integer.parseInt(model.getValueAt(indx, 0).toString());
+			train="train"+y;
+			exp=model.getValueAt(indx,1).toString();
 			//To check if the user selected the date
 			if(dateChooser.getDate()==null)
 				JOptionPane.showMessageDialog(btn1,"Choose your date");
@@ -284,7 +382,7 @@ public class MyBookings {
     		//it contains information of no of rows,columns and column names
     	ResultSetMetaData rsmd=rs.getMetaData();
     	//To add rows and columns to our table at run time
-    	DefaultTableModel model=(DefaultTableModel) table.getModel();
+    	 model=(DefaultTableModel) table.getModel();
     	
     	//It will give the column count of the table
     	int cols=rsmd.getColumnCount();
@@ -314,7 +412,7 @@ public class MyBookings {
     		rs=st.executeQuery(q5);
     		ResultSetMetaData rsmd=rs.getMetaData();
     	
-    	DefaultTableModel model=(DefaultTableModel) table2.getModel();
+    	 model=(DefaultTableModel) table2.getModel();
     	
     	int cols=rsmd.getColumnCount();
     	String[] colName=new String[cols];
@@ -340,8 +438,8 @@ public class MyBookings {
     		String q6="select * from waiting_list"+kid+" where email="+"'"+email+"'";
     		rs=st.executeQuery(q6);
     		ResultSetMetaData rsmd=rs.getMetaData();
-    	
-    	DefaultTableModel model=(DefaultTableModel) table3.getModel();
+    		
+     model=(DefaultTableModel) table3.getModel();
     	
     	int cols=rsmd.getColumnCount();
     	String[] colName=new String[cols];
@@ -365,7 +463,7 @@ public class MyBookings {
     	}
     	}
 	}else 
-		JOptionPane.showMessageDialog(btn1,"check your train and date that you've booked");
+		JOptionPane.showMessageDialog(btn1,"No bookings..check your train and date that you've booked");
 	}
 	}else
 		JOptionPane.showMessageDialog(btn1,"choose your train");
